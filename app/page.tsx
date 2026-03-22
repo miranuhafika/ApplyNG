@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { prisma } from '@/lib/prisma'
+import { prisma, withRetry } from '@/lib/prisma'
 import { PostCard } from '@/components/listings/PostCard'
 import { SITE_NAME, SITE_DESCRIPTION, CATEGORIES } from '@/lib/constants'
 import { AdBanner } from '@/components/ads/AdBanner'
@@ -13,12 +13,14 @@ export const metadata: Metadata = {
 
 async function getFeaturedPosts() {
   try {
-    return await prisma.post.findMany({
-      where: { status: 'PUBLISHED', OR: [{ featured: true }, { sponsored: true }] },
-      include: { tags: true },
-      orderBy: [{ sponsored: 'desc' }, { featured: 'desc' }, { createdAt: 'desc' }],
-      take: 6,
-    })
+    return await withRetry(() =>
+      prisma.post.findMany({
+        where: { status: 'PUBLISHED', OR: [{ featured: true }, { sponsored: true }] },
+        include: { tags: true },
+        orderBy: [{ sponsored: 'desc' }, { featured: 'desc' }, { createdAt: 'desc' }],
+        take: 6,
+      })
+    )
   } catch {
     return []
   }
