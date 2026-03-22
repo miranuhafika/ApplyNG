@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { SITE_NAME } from '@/lib/constants'
 
 export const metadata: Metadata = {
@@ -46,7 +47,7 @@ export default function AboutPage() {
         <h2>Contact Us</h2>
         <p>
           Have questions or want to submit an opportunity? 
-          Visit our <a href="/contact">contact page</a> or email us at 
+          Visit our <Link href="/contact" className="text-green-700 hover:underline">contact page</Link> or email us at 
           <a href="mailto:info@applyng.com"> info@applyng.com</a>.
         </p>
       </div>

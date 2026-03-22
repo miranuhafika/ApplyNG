@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { SITE_NAME } from '@/lib/constants'
 
 export const metadata: Metadata = {
@@ -27,7 +28,7 @@ export default function ContactPage() {
               <span className="text-2xl">📝</span>
               <div>
                 <h3 className="font-semibold text-gray-900 dark:text-white">Submit an Opportunity</h3>
-                <a href="/submit" className="text-primary hover:underline">Submit free listing</a>
+                <Link href="/submit" className="text-primary hover:underline">Submit free listing</Link>
               </div>
             </div>
             <div className="flex items-start gap-4">

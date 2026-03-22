@@ -115,8 +115,9 @@ model Post {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
-  tags       Tag[]
-  savedBy    SavedPost[]
+  tags         Tag[]
+  savedBy      SavedPost[]
+  sponsorships Sponsorship[]
 }
 
 model Tag {
@@ -178,4 +179,52 @@ model Submission {
   adminNotes   String?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+}
+
+// ── Paystack / Monetization ──────────────────────────────────────────────────
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentType {
+  SPONSORSHIP
+  FEATURED
+  NEWSLETTER
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  reference   String        @unique
+  amount      Int           // in kobo (NGN × 100)
+  currency    String        @default("NGN")
+  status      PaymentStatus @default(PENDING)
+  type        PaymentType
+  email       String
+  postId      String?
+  metadata    Json?
+  paystackId  String?       // Paystack transaction id
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  sponsorship Sponsorship?
+}
+
+model Sponsorship {
+  id            String   @id @default(cuid())
+  postId        String
+  paymentId     String   @unique
+  startDate     DateTime @default(now())
+  endDate       DateTime
+  isAutoRenewal Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
 }

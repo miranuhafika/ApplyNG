@@ -43,3 +43,22 @@ export const COLORS = {
   dark: '#333333',
   darkBg: '#1A1A1A',
 }
+
+// Paystack pricing in kobo (NGN × 100)
+export const PAYSTACK_PRICES = {
+  SPONSORSHIP: 2500000,   // ₦25,000
+  FEATURED: 1250000,      // ₦12,500
+  NEWSLETTER: 10000000,   // ₦100,000
+} as const
+
+export const PAYSTACK_PRICES_NGN = {
+  SPONSORSHIP: 25000,
+  FEATURED: 12500,
+  NEWSLETTER: 100000,
+} as const
+
+export const PAYSTACK_LABELS = {
+  SPONSORSHIP: 'Sponsored Listing',
+  FEATURED: 'Featured Listing',
+  NEWSLETTER: 'Newsletter Sponsorship',
+} as const

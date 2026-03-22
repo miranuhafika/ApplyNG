@@ -22,6 +22,7 @@ export default async function AdminSubscribersPage() {
             {activeCount} active / {subscribers.length} total
           </p>
         </div>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a
           href="/api/admin/subscribers/export"
           className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-600 text-sm"
