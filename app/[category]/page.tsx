@@ -87,15 +87,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-        <Link href="/" className="hover:text-primary">Home</Link>
-        <span className="mx-2">/</span>
+      <nav className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 mb-8">
+        <Link href="/" className="hover:text-gray-900 dark:hover:text-white transition-colors">Home</Link>
+        <svg className="w-3.5 h-3.5 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
         <span className="text-gray-900 dark:text-white font-medium">{label}</span>
       </nav>
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar filter */}
-        <aside className="lg:w-64 flex-shrink-0">
+        <aside className="lg:w-60 flex-shrink-0">
           <PostFilter category={categoryParam} />
         </aside>
 
@@ -103,39 +105,44 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{label}</h1>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+              <h1 className="section-heading">{label}</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 {total.toLocaleString()} {total === 1 ? 'opportunity' : 'opportunities'} found
               </p>
             </div>
 
             {/* Search bar */}
             <form action={`/${categoryParam}`} method="get" className="flex gap-2">
-              <input
-                type="text"
-                name="search"
-                placeholder="Search..."
-                defaultValue={sp.search}
-                className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button type="submit" className="bg-primary text-white px-4 py-2 text-sm rounded-lg hover:bg-primary-600">
+              <div className="relative">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search..."
+                  defaultValue={sp.search}
+                  className="pl-9 pr-4 py-2 text-sm bg-surface-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 transition-all w-48"
+                />
+              </div>
+              <button type="submit" className="btn-primary text-sm">
                 Search
               </button>
             </form>
           </div>
 
           {posts.length === 0 ? (
-            <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-              <div className="text-5xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">No results found</h3>
-              <p className="text-gray-500 mt-2">Try different filters or search terms</p>
-              <Link href={`/${categoryParam}`} className="inline-block mt-4 text-primary hover:underline">
+            <div className="card text-center py-20 px-6">
+              <div className="text-5xl mb-5">🔍</div>
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">No results found</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-6">Try different filters or search terms</p>
+              <Link href={`/${categoryParam}`} className="btn-secondary inline-flex mx-auto">
                 Clear filters
               </Link>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {posts.map((post, index) => (
                   <React.Fragment key={post.id}>
                     <PostCard post={post} />
@@ -151,23 +158,23 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-center gap-2 mt-8 flex-wrap">
+                <div className="flex justify-center gap-1.5 mt-10 flex-wrap">
                   {page > 1 && (
                     <Link
                       href={`?page=${page - 1}`}
-                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
+                      className="px-4 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-surface-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all"
                     >
-                      ← Previous
+                      ← Prev
                     </Link>
                   )}
                   {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => i + 1).map((p) => (
                     <Link
                       key={p}
                       href={`?page=${p}`}
-                      className={`px-4 py-2 border rounded-lg text-sm ${
+                      className={`px-4 py-2 text-sm border rounded-xl transition-all ${
                         p === page
-                          ? 'bg-primary text-white border-primary'
-                          : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                          ? 'bg-primary-600 text-white border-primary-600 shadow-sm'
+                          : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-surface-50 dark:hover:bg-gray-800'
                       }`}
                     >
                       {p}
@@ -176,7 +183,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                   {page < totalPages && (
                     <Link
                       href={`?page=${page + 1}`}
-                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
+                      className="px-4 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-surface-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all"
                     >
                       Next →
                     </Link>

@@ -27,36 +27,36 @@ export function PostFilter({ category }: PostFilterProps) {
   const sort = searchParams.get('sort') || 'newest'
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-      <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Filter Opportunities</h3>
+    <div className="card p-5 space-y-6">
+      <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wide">Filters</h3>
 
       {/* Category filter (only if not on a category page) */}
       {!category && (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 cursor-pointer">
+        <div>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wide">Category</p>
+          <div className="space-y-1.5">
+            <label className="flex items-center gap-2.5 cursor-pointer group">
               <input
                 type="radio"
                 name="category"
                 value=""
                 checked={!searchParams.get('category')}
                 onChange={() => updateFilter('category', '')}
-                className="text-primary"
+                className="text-primary-600 focus:ring-primary-500"
               />
-              <span className="text-sm text-gray-700 dark:text-gray-300">All Categories</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">All Categories</span>
             </label>
             {CATEGORIES.map((cat) => (
-              <label key={cat.value} className="flex items-center gap-2 cursor-pointer">
+              <label key={cat.value} className="flex items-center gap-2.5 cursor-pointer group">
                 <input
                   type="radio"
                   name="category"
                   value={cat.value}
                   checked={searchParams.get('category') === cat.value}
                   onChange={() => updateFilter('category', cat.value)}
-                  className="text-primary"
+                  className="text-primary-600 focus:ring-primary-500"
                 />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
+                <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                   {cat.emoji} {cat.label}
                 </span>
               </label>
@@ -66,24 +66,24 @@ export function PostFilter({ category }: PostFilterProps) {
       )}
 
       {/* Location filter */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
+      <div>
+        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Location</label>
         <input
           type="text"
           placeholder="e.g., Lagos, Abuja"
           value={location}
           onChange={(e) => updateFilter('location', e.target.value)}
-          className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+          className="input"
         />
       </div>
 
       {/* Funding Type */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Funding Type</label>
+      <div>
+        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Funding Type</label>
         <select
           value={fundingType}
           onChange={(e) => updateFilter('funding', e.target.value)}
-          className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+          className="input"
         >
           <option value="">All Types</option>
           <option value="FULLY_FUNDED">Fully Funded</option>
@@ -93,12 +93,12 @@ export function PostFilter({ category }: PostFilterProps) {
       </div>
 
       {/* Sort */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sort By</label>
+      <div>
+        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Sort By</label>
         <select
           value={sort}
           onChange={(e) => updateFilter('sort', e.target.value)}
-          className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+          className="input"
         >
           <option value="newest">Newest First</option>
           <option value="deadline">Deadline (Soonest)</option>
@@ -107,12 +107,12 @@ export function PostFilter({ category }: PostFilterProps) {
       </div>
 
       {/* Remote Only */}
-      <label className="flex items-center gap-2 cursor-pointer">
+      <label className="flex items-center gap-2.5 cursor-pointer">
         <input
           type="checkbox"
           checked={searchParams.get('remote') === 'true'}
           onChange={(e) => updateFilter('remote', e.target.checked ? 'true' : '')}
-          className="rounded text-primary"
+          className="rounded text-primary-600 focus:ring-primary-500"
         />
         <span className="text-sm text-gray-700 dark:text-gray-300">🌐 Remote Only</span>
       </label>
@@ -120,7 +120,7 @@ export function PostFilter({ category }: PostFilterProps) {
       {/* Reset */}
       <button
         onClick={() => router.push(category ? `/${category}` : '/jobs')}
-        className="w-full mt-4 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        className="w-full text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border border-gray-200 dark:border-gray-700 rounded-xl py-2 hover:border-gray-300 dark:hover:border-gray-600 transition-all"
       >
         Reset Filters
       </button>

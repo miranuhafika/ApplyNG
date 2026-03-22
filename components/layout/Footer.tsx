@@ -3,39 +3,50 @@ import { SITE_NAME, CATEGORIES } from '@/lib/constants'
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="bg-gray-950 dark:bg-black text-gray-400 mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="text-2xl font-bold text-white">
-              Apply<span className="text-accent">NG</span>
+            <Link href="/" className="inline-block">
+              <span className="text-xl font-bold text-white tracking-tight">
+                Apply<span className="text-primary-400">NG</span>
+              </span>
             </Link>
-            <p className="mt-3 text-gray-400 max-w-md">
-              Nigeria&apos;s #1 platform for discovering scholarships, jobs, fellowships, internships, and grants.
-              Your next opportunity is just a click away.
+            <p className="mt-3 text-gray-500 max-w-xs text-sm leading-relaxed">
+              Nigeria&apos;s leading platform for discovering scholarships, jobs, fellowships, internships, and grants.
             </p>
-            <div className="flex gap-4 mt-4">
-              <a href="https://twitter.com/applyng" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                Twitter
-              </a>
-              <a href="https://facebook.com/applyng" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                Facebook
-              </a>
-              <a href="https://linkedin.com/company/applyng" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                LinkedIn
-              </a>
+            <div className="flex gap-5 mt-5">
+              {[
+                { label: 'Twitter', href: 'https://twitter.com/applyng' },
+                { label: 'Facebook', href: 'https://facebook.com/applyng' },
+                { label: 'LinkedIn', href: 'https://linkedin.com/company/applyng' },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-gray-500 hover:text-white transition-colors"
+                >
+                  {s.label}
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Categories */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Categories</h3>
-            <ul className="space-y-2">
+            <h3 className="text-white text-sm font-semibold mb-4 tracking-wide">Opportunities</h3>
+            <ul className="space-y-2.5">
               {CATEGORIES.map((cat) => (
                 <li key={cat.value}>
-                  <Link href={`/${cat.value.toLowerCase()}`} className="hover:text-white transition-colors text-sm">
-                    {cat.emoji} {cat.label}
+                  <Link
+                    href={`/${cat.value.toLowerCase()}`}
+                    className="text-sm text-gray-500 hover:text-white transition-colors flex items-center gap-1.5"
+                  >
+                    <span>{cat.emoji}</span>
+                    {cat.label}
                   </Link>
                 </li>
               ))}
@@ -44,22 +55,30 @@ export function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Company</h3>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-              <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-              <li><Link href="/submit" className="hover:text-white transition-colors">Submit Opportunity</Link></li>
-              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+            <h3 className="text-white text-sm font-semibold mb-4 tracking-wide">Company</h3>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                { label: 'About Us', href: '/about' },
+                { label: 'Contact', href: '/contact' },
+                { label: 'Submit Opportunity', href: '/submit' },
+                { label: 'Privacy Policy', href: '/privacy' },
+                { label: 'Terms of Service', href: '/terms' },
+              ].map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-gray-500 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-500">
+        <div className="border-t border-gray-900 mt-10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p className="text-xs text-gray-600">
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-xs text-gray-600">
             Built with ❤️ for Nigeria&apos;s youth
           </p>
         </div>
