@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Category {
+  JOBS
+  SCHOLARSHIPS
+  FELLOWSHIPS
+  INTERNSHIPS
+  GRANTS
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  EXPIRED
+  REJECTED
+}
+
+enum FundingType {
+  FULLY_FUNDED
+  PARTIAL
+  SELF_FUNDED
+  NOT_APPLICABLE
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts     Account[]
+  sessions     Session[]
+  savedPosts   SavedPost[]
+  alerts       Alert[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Post {
+  id           String      @id @default(cuid())
+  title        String
+  slug         String      @unique
+  category     Category
+  organization String
+  location     String?
+  isRemote     Boolean     @default(false)
+  fundingType  FundingType @default(NOT_APPLICABLE)
+  description  String      @db.Text
+  eligibility  String?     @db.Text
+  applyUrl     String
+  deadline     DateTime?
+  status       PostStatus  @default(DRAFT)
+  featured     Boolean     @default(false)
+  sponsored    Boolean     @default(false)
+  views        Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  tags       Tag[]
+  savedBy    SavedPost[]
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+  posts Post[]
+}
+
+model SavedPost {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model Alert {
+  id         String    @id @default(cuid())
+  userId     String
+  category   Category?
+  location   String?
+  keyword    String?
+  frequency  String    @default("DAILY")
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscriber {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String?
+  isActive    Boolean  @default(true)
+  unsubToken  String   @unique @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Submission {
+  id           String           @id @default(cuid())
+  title        String
+  organization String
+  category     Category
+  location     String?
+  isRemote     Boolean          @default(false)
+  fundingType  FundingType      @default(NOT_APPLICABLE)
+  description  String           @db.Text
+  eligibility  String?          @db.Text
+  applyUrl     String
+  deadline     DateTime?
+  contactEmail String
+  status       SubmissionStatus @default(PENDING)
+  adminNotes   String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}

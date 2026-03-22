@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 51, 51, 51;
+  --background-rgb: 245, 245, 245;
+}
+
+.dark {
+  --foreground-rgb: 245, 245, 245;
+  --background-rgb: 26, 26, 26;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: 'Inter', 'Poppins', sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.prose-content h1,
+.prose-content h2,
+.prose-content h3 {
+  @apply font-semibold mt-6 mb-3;
+}
+.prose-content p {
+  @apply mb-4 leading-relaxed;
+}
+.prose-content ul,
+.prose-content ol {
+  @apply pl-6 mb-4;
+}
+.prose-content ul {
+  @apply list-disc;
+}
+.prose-content ol {
+  @apply list-decimal;
+}
+.prose-content a {
+  @apply text-primary underline;
+}
+.prose-content strong {
+  @apply font-semibold;
+}
