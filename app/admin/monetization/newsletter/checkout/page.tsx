@@ -12,7 +12,7 @@ function getUpcomingMondays(): Date[] {
   const today = new Date()
   // Find next Monday
   const day = today.getDay()
-  const daysUntilMonday = day === 1 ? 7 : (8 - day) % 7 || 7
+  const daysUntilMonday = day === 0 ? 1 : day === 1 ? 7 : 8 - day
   const nextMonday = new Date(today)
   nextMonday.setDate(today.getDate() + daysUntilMonday)
   nextMonday.setHours(0, 0, 0, 0)

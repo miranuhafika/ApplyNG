@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { initializeTransaction, generateReference } from '@/lib/paystack'
+import { initializeTransaction } from '@/lib/paystack'
+import { PAYSTACK_PRICES } from '@/lib/constants'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     await prisma.payment.create({
       data: {
         reference: paystackData.reference,
-        amount: type === 'SPONSORSHIP' ? 2500000 : type === 'FEATURED' ? 1250000 : 10000000,
+        amount: PAYSTACK_PRICES[type],
         type,
         email,
         postId: postId ?? null,

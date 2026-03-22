@@ -64,6 +64,8 @@ async function handleChargeSuccess(data: {
     const endDate = new Date()
     endDate.setDate(endDate.getDate() + 30)
 
+    // Upsert for idempotency: if the webhook fires multiple times for the same payment,
+    // we avoid duplicate sponsorship records.
     await prisma.$transaction([
       prisma.post.update({
         where: { id: updated.postId },

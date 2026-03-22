@@ -1,5 +1,5 @@
 import { Resend } from 'resend'
-import { SITE_NAME, SITE_URL } from './constants'
+import { SITE_NAME, SITE_URL, PAYSTACK_LABELS } from './constants'
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY || 'placeholder')
@@ -219,12 +219,6 @@ export async function sendAdminNotification(submission: { title: string; organiz
 
 // ── Paystack Payment Emails ──────────────────────────────────────────────────
 
-const PAYMENT_TYPE_LABELS: Record<string, string> = {
-  SPONSORSHIP: 'Sponsored Listing',
-  FEATURED: 'Featured Listing',
-  NEWSLETTER: 'Newsletter Sponsorship',
-}
-
 export async function sendPaymentConfirmationEmail(params: {
   to: string
   reference: string
@@ -236,7 +230,7 @@ export async function sendPaymentConfirmationEmail(params: {
     style: 'currency',
     currency: 'NGN',
   })
-  const label = PAYMENT_TYPE_LABELS[type] ?? type
+  const label = PAYSTACK_LABELS[type] ?? type
   const date = new Date().toLocaleDateString('en-NG', {
     year: 'numeric',
     month: 'long',

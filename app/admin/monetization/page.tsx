@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { PAYSTACK_PRICES_NGN } from '@/lib/constants'
+import { PAYSTACK_PRICES_NGN, PAYSTACK_LABELS } from '@/lib/constants'
 import Link from 'next/link'
 
 async function getMonetizationStats() {
@@ -35,11 +35,7 @@ const STATUS_COLORS: Record<string, string> = {
   REFUNDED: 'bg-blue-100 text-blue-800',
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  SPONSORSHIP: 'Sponsored Listing',
-  FEATURED: 'Featured Listing',
-  NEWSLETTER: 'Newsletter',
-}
+const TYPE_LABELS = PAYSTACK_LABELS
 
 export default async function MonetizationPage() {
   const session = await getServerSession(authOptions)
