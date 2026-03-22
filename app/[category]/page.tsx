@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
-import { prisma } from '@/lib/prisma'
+import { prisma, withRetry } from '@/lib/prisma'
 import { PostCard } from '@/components/listings/PostCard'
 import { PostFilter } from '@/components/listings/PostFilter'
 import { AdBanner } from '@/components/ads/AdBanner'
@@ -68,16 +68,18 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       ? { views: 'desc' }
       : { createdAt: 'desc' }
 
-  const [posts, total] = await Promise.all([
-    prisma.post.findMany({
-      where,
-      include: { tags: true },
-      orderBy: [{ sponsored: 'desc' }, { featured: 'desc' }, orderBy],
-      skip,
-      take: POSTS_PER_PAGE,
-    }),
-    prisma.post.count({ where }),
-  ])
+  const [posts, total] = await withRetry(() =>
+    Promise.all([
+      prisma.post.findMany({
+        where,
+        include: { tags: true },
+        orderBy: [{ sponsored: 'desc' }, { featured: 'desc' }, orderBy],
+        skip,
+        take: POSTS_PER_PAGE,
+      }),
+      prisma.post.count({ where }),
+    ])
+  )
 
   const totalPages = Math.ceil(total / POSTS_PER_PAGE)
   const label = categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1)

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { prisma } from '@/lib/prisma'
+import { prisma, withRetry } from '@/lib/prisma'
 import { PostCard } from '@/components/listings/PostCard'
 import Link from 'next/link'
 
@@ -18,17 +18,19 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
 
 export default async function TagPage({ params }: TagPageProps) {
   const { name } = await params
-  const tag = await prisma.tag.findUnique({
-    where: { name },
-    include: {
-      posts: {
-        where: { status: 'PUBLISHED' },
-        include: { tags: true },
-        orderBy: { createdAt: 'desc' },
-        take: 40,
+  const tag = await withRetry(() =>
+    prisma.tag.findUnique({
+      where: { name },
+      include: {
+        posts: {
+          where: { status: 'PUBLISHED' },
+          include: { tags: true },
+          orderBy: { createdAt: 'desc' },
+          take: 40,
+        },
       },
-    },
-  })
+    })
+  )
 
   if (!tag) notFound()
 
