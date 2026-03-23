@@ -1,5 +1,5 @@
 import { Resend } from 'resend'
-import { SITE_NAME, SITE_URL } from './constants'
+import { SITE_NAME, SITE_URL, PAYSTACK_LABELS } from './constants'
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY || 'placeholder')
@@ -214,5 +214,81 @@ export async function sendAdminNotification(submission: { title: string; organiz
     })
   } catch (error) {
     console.error('Failed to send admin notification:', error)
+  }
+}
+
+// ── Paystack Payment Emails ──────────────────────────────────────────────────
+
+export async function sendPaymentConfirmationEmail(params: {
+  to: string
+  reference: string
+  amountKobo: number
+  type: 'SPONSORSHIP' | 'FEATURED' | 'NEWSLETTER'
+}) {
+  const { to, reference, amountKobo, type } = params
+  const amountNGN = (amountKobo / 100).toLocaleString('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+  })
+  const label = PAYSTACK_LABELS[type] ?? type
+  const date = new Date().toLocaleDateString('en-NG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  try {
+    await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `Payment Confirmed: ${label} — ${SITE_NAME}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <body style="font-family: Inter, sans-serif; background-color: #f5f5f5; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden;">
+              <div style="background: #006400; padding: 30px; text-align: center;">
+                <h1 style="color: white; margin: 0;">${SITE_NAME}</h1>
+                <p style="color: #ccebcc; margin: 8px 0 0;">Payment Confirmation</p>
+              </div>
+              <div style="padding: 30px;">
+                <h2 style="color: #006400;">✅ Payment Successful!</h2>
+                <p>Your payment for <strong>${label}</strong> has been confirmed.</p>
+                <table style="width:100%; border-collapse: collapse; margin: 20px 0;">
+                  <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <td style="padding: 10px 0; color: #666;">Transaction Reference</td>
+                    <td style="padding: 10px 0; font-weight: bold; font-family: monospace;">${reference}</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <td style="padding: 10px 0; color: #666;">Service</td>
+                    <td style="padding: 10px 0; font-weight: bold;">${label}</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <td style="padding: 10px 0; color: #666;">Amount Paid</td>
+                    <td style="padding: 10px 0; font-weight: bold; color: #006400;">${amountNGN}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; color: #666;">Date</td>
+                    <td style="padding: 10px 0;">${date}</td>
+                  </tr>
+                </table>
+                <p>Your listing will be activated shortly. You can manage your listings from the admin dashboard.</p>
+                <a href="${SITE_URL}/admin/monetization" style="display: inline-block; background: #006400; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 16px;">
+                  View Dashboard
+                </a>
+              </div>
+              <div style="padding: 20px; background: #f5f5f5; text-align: center;">
+                <p style="color: #666; font-size: 12px;">
+                  © ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.<br>
+                  <a href="${SITE_URL}" style="color: #006400;">${SITE_URL}</a>
+                </p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    })
+  } catch (error) {
+    console.error('Failed to send payment confirmation email:', error)
   }
 }
