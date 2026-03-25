@@ -42,21 +42,45 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 Copy `.env.example` to `.env.local` and fill in:
 
 ```env
+# Required
 DATABASE_URL=postgresql://user:password@localhost:5432/applyng
 NEXTAUTH_SECRET=generate-with-openssl-rand-base64-32
 NEXTAUTH_URL=http://localhost:3000
+
+# Optional: Google OAuth (skip to disable Google login)
 GOOGLE_CLIENT_ID=from-google-console
 GOOGLE_CLIENT_SECRET=from-google-console
+
+# Optional: Resend email (skip to disable welcome emails)
 RESEND_API_KEY=from-resend.com
+
 NEXT_PUBLIC_ADSENSE_ID=ca-pub-your-adsense-id
 CRON_SECRET=random-secure-string
 ADMIN_EMAIL=admin@yourdomain.com
+
+# First-run admin bootstrap (see below)
+DEFAULT_ADMIN_EMAIL=admin@yourdomain.com
+DEFAULT_ADMIN_PASSWORD=ChangeMe@1234
 ```
 
 ### Generate NEXTAUTH_SECRET
 ```bash
 openssl rand -base64 32
 ```
+
+## 👑 First-run Admin Bootstrap
+
+On first server startup, if no ADMIN user exists in the database, one is created automatically using these env vars:
+
+```env
+DEFAULT_ADMIN_EMAIL=admin@yourdomain.com
+DEFAULT_ADMIN_PASSWORD=ChangeMe@1234
+```
+
+The password is bcrypt-hashed before storage. After logging in for the first time, change the password in the admin panel under **Settings**.  
+Once an admin exists, these env vars have no effect and can be removed.
+
+> ⚠️ Never commit real credentials to source control. After first login, change the password in the admin panel (**Settings**) and remove `DEFAULT_ADMIN_PASSWORD` from your `.env` file.
 
 ## 🗄️ Database Setup (Supabase)
 
@@ -148,7 +172,9 @@ openssl rand -base64 32
 
 ## 👑 Creating Admin User
 
-After signing up, update your user role in the database:
+Use the **First-run Admin Bootstrap** above to create an admin automatically on first startup.
+
+Alternatively, after signing up, update your user role in the database:
 
 ```sql
 UPDATE "User" SET role = 'ADMIN' WHERE email = 'your@email.com';
