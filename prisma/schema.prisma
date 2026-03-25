@@ -228,3 +228,30 @@ model Sponsorship {
   payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
   post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
+
+// ── Admin Settings ────────────────────────────────────────────────────────────
+
+model Setting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String   @db.Text
+  description String?
+  category    String   @default("general")
+  isSecret    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  auditLogs SettingAuditLog[]
+}
+
+model SettingAuditLog {
+  id        String   @id @default(cuid())
+  settingId String
+  key       String
+  oldValue  String?  @db.Text
+  newValue  String   @db.Text
+  changedBy String
+  changedAt DateTime @default(now())
+
+  setting Setting @relation(fields: [settingId], references: [id], onDelete: Cascade)
+}
