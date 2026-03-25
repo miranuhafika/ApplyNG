@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
       data: { name, email, password: hashedPassword },
     })
 
-    sendWelcomeEmail(email, name).catch(console.error)
+    if (process.env.RESEND_API_KEY) {
+      sendWelcomeEmail(email, name).catch(console.error)
+    }
 
     return NextResponse.json({ message: 'Account created successfully!' }, { status: 201 })
   } catch (error: unknown) {
